@@ -1,9 +1,10 @@
 {
-    "files.associations": {
-        "*.ejs": "html",
-        "ostream": "cpp",
-        "iostream": "cpp",
-        "iosfwd": "cpp",
-        "cstdlib": "cpp"
-    }
+  "files.associations": {
+    "*.ejs": "html",
+    "ostream": "cpp",
+    "iostream": "cpp",
+    "iosfwd": "cpp",
+    "cstdlib": "cpp",
+    "string": "cpp"
+  }
 }
