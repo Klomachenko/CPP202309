@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "user.h"
 #include "user.cpp"
@@ -11,6 +12,7 @@ const int mapY = 5;
 bool checkXY(int user_x, int mapX, int user_y, int mapY);
 void displayMap(int map[][mapX], int user_x, int user_y, User &user);
 bool checkGoal(int map[][mapX], int user_x, int user_y);
+void loadMapFromFile(int map[][mapX], const string &fileName);
 
 // 매지션 클래스
 class Magician : public User
@@ -34,11 +36,8 @@ public:
 
 int main()
 {
-  int map[mapY][mapX] = {{0, 1, 2, 0, 4},
-                         {1, 0, 0, 2, 0},
-                         {0, 0, 0, 0, 0},
-                         {0, 2, 3, 0, 0},
-                         {3, 0, 0, 0, 2}};
+  int map[mapY][mapX];
+  loadMapFromFile(map, "map.txt");
 
   // 두 플레이어 생성
   Magician magician;
@@ -180,4 +179,41 @@ bool checkXY(int user_x, int mapX, int user_y, int mapY)
 bool checkGoal(int map[][mapX], int user_x, int user_y)
 {
   return (map[user_y][user_x] == 4);
+}
+
+void loadMapFromFile(int map[][mapX], const string &fileName)
+{
+  // 파일 스트림을 열고, 열기에 실패하면 오류 메시지를 출력하고 프로그램을 종료합니다.
+  ifstream file(fileName);
+  if (!file.is_open())
+  {
+    cerr << "오류: 파일 " << fileName << "을(를) 열 수 없습니다." << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  // 2차원 배열에 맵 데이터를 읽어옵니다.
+  for (int i = 0; i < mapY; ++i)
+  {
+    for (int j = 0; j < mapX; ++j)
+    {
+      // 파일에서 데이터를 읽지 못하면 오류 메시지를 출력하고 프로그램을 종료합니다.
+      if (!(file >> map[i][j]))
+      {
+        cerr << "오류: 파일 " << fileName << "에서 데이터를 읽을 수 없습니다." << endl;
+        file.close();
+        exit(EXIT_FAILURE);
+      }
+
+      // 읽은 데이터가 허용된 범위를 벗어나면 오류 메시지를 출력하고 프로그램을 종료합니다.
+      if (map[i][j] < 0 || map[i][j] > 4)
+      {
+        cerr << "오류: 파일 " << fileName << "에 잘못된 지도 데이터가 있습니다." << endl;
+        file.close();
+        exit(EXIT_FAILURE);
+      }
+    }
+  }
+
+  // 파일 스트림을 닫습니다.
+  file.close();
 }
